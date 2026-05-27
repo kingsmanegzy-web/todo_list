@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, type FormEvent } from "react";
 
 type Todo = {
   id: string;
@@ -131,7 +131,8 @@ export default function Home() {
     }
   }, [editingId]);
 
-  const addTodo = () => {
+  const addTodo = (e?: FormEvent) => {
+    e?.preventDefault();
     const trimmed = inputText.trim();
     if (!trimmed) return;
     const newTodo: Todo = {
@@ -250,23 +251,25 @@ export default function Home() {
           <p className="text-gray-500 text-sm">タスクを管理しよう</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-md p-4 mb-4 flex gap-2">
+        <form
+          onSubmit={addTodo}
+          className="bg-white rounded-2xl shadow-md p-4 mb-4 flex gap-2"
+        >
           <input
             type="text"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && addTodo()}
             placeholder="新しいタスクを入力..."
             maxLength={MAX_TODO_LENGTH}
             className="flex-1 outline-none text-gray-700 placeholder-gray-400 text-base"
           />
           <button
-            onClick={addTodo}
+            type="submit"
             className="bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-semibold px-5 py-2 rounded-xl transition-colors"
           >
             追加
           </button>
-        </div>
+        </form>
 
         <div className="bg-white rounded-2xl shadow-md mb-4 flex overflow-hidden">
           {(["all", "active", "completed"] as Filter[]).map((f) => (
